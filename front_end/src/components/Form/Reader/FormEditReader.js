@@ -20,6 +20,11 @@ const FormEditReader =(props)=> {
         //Load sự kiện submit lên drawer nút submit
         dispatch({ type: 'SET_SUBMIT', submitFunction: handleSubmit });
         dispatch({ type: GET_ALL_GENDER_SAGA })
+
+        dispatch({ type: 'GET_LIST_PHONE_SAGA'})
+        dispatch({ type: 'GET_LIST_CCCD_SAGA' })
+        dispatch({ type: 'GET_LIST_EMAIL_SAGA'})
+        dispatch({ type: 'GET_LIST_MASINHVIEN_SAGA' })
     }, [])
     const {
       values,
@@ -31,17 +36,21 @@ const FormEditReader =(props)=> {
       setFieldValue
   } = props;
 
-  const listGender=useSelector(state => state.genderReducers.genderList);
   const imgPreview = useSelector(state => state.imgReducers.imgPreview);
 
-  const renderOptionGender=()=>{
-    return listGender.map((gender,index)=>{
-      return  <option key={index} value={gender.id}>
-      {gender.NoiDung}
-  </option>
-    })
-  }
-  
+  const phoneList = useSelector(state => state.validateReducers.phoneList);
+  const emailList = useSelector(state => state.validateReducers.emailList);
+  const cccdList = useSelector(state => state.validateReducers.cccdList);
+  const masinhvienList = useSelector(state => state.validateReducers.masinhvienList);
+  const readerEdit = useSelector(state => state.readerReducers.readerEdit);
+
+
+
+  const ListEmailFilter=emailList.filter((item=>item.Email!==readerEdit.Email))
+  const ListCCCDFilter=cccdList.filter((item=>item.CCCD!==readerEdit.CCCD))
+  const ListPhoneFilter=phoneList.filter((item=>item.Phone!==readerEdit.Phone))
+  const ListMaSinhVienFilter=masinhvienList.filter((item=>item.MaSinhVien!==readerEdit.MaSinhVien))
+
   return (
 
     <>
@@ -65,8 +74,14 @@ const FormEditReader =(props)=> {
         onBlur={handleBlur}
         value={values.Email}/>
         
+        
+
         {touched.Email && errors.Email ? (
   <div className="text-danger">{errors.Email}</div>
+       ) : null}
+        
+        {touched.Email && !errors.Email && ListEmailFilter.some((item,key)=>item.Email==values.Email)==true ? (
+  <div className="text-danger">Đã tồn tại email này trong hệ thống</div>
        ) : null}
         
         </div>
@@ -94,6 +109,10 @@ const FormEditReader =(props)=> {
   <div className="text-danger">{errors.Phone}</div>
        ) : null}
         
+
+        {touched.Phone && !errors.Phone && ListPhoneFilter.some((item,key)=>item.Phone==values.Phone)==true ? (
+  <div className="text-danger">Đã tồn tại sđt này trong hệ thống</div>
+       ) : null}
         </div>
 
   <div className="col-6"> 
@@ -105,7 +124,9 @@ const FormEditReader =(props)=> {
         {touched.CCCD && errors.CCCD ? (
   <div className="text-danger">{errors.CCCD}</div>
        ) : null}
-        
+             {touched.CCCD && !errors.CCCD && ListCCCDFilter.some((item,key)=>item.CCCD==values.CCCD)==true ? (
+  <div className="text-danger">Đã tồn tại CCCD này trong hệ thống</div>
+       ) : null}
         </div>
     
 
@@ -128,8 +149,17 @@ const FormEditReader =(props)=> {
   <div className="col-6"> 
   <div>
   <label htmlFor="">Gioi Tinh</label>
-  <select className="form-control" name="MaGioiTinh" value={values.MaGioiTinh} onChange={handleChange}>
-                            {renderOptionGender()}
+
+
+
+
+  
+  <select className="form-control" name="MaGioiTinh"onChange={handleChange}
+        onBlur={handleBlur}
+        value={values.MaGioiTinh}>
+  <option value="1" className="form-control">Nam</option>
+      <option value="2" className="form-control">Nữ</option>
+      <option value="3" className="form-control">Không Xác Định</option>
                         </select>
 </div>
 
@@ -144,7 +174,9 @@ const FormEditReader =(props)=> {
         {touched.MaSinhVien && errors.MaSinhVien ? (
   <div className="text-danger">{errors.MaSinhVien}</div>
        ) : null}
-        
+             {touched.MaSinhVien && !errors.MaSinhVien && ListMaSinhVienFilter.some((item,key)=>item.MaSinhVien==values.MaSinhVien)==true ? (
+  <div className="text-danger">Đã tồn tại MaSinhVien này trong hệ thống</div>
+       ) : null}
         </div>
 
 

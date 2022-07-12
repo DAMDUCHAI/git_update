@@ -36,7 +36,8 @@ id: 5,
       bookByFieuSachList:[],
 
       MaFieuSach:''    ,   //dùng đe lưu lại id mã phiếu sách để dùng cho trả sách
-      MaFieuSachForViewDetaildCard:''
+      MaFieuSachForViewDetaildCard:'',
+      keySearch:''
       
 }
 const bookReducers = (state = stateDefault,action) => {
@@ -84,6 +85,12 @@ case 'SET_MA_FIEU_SACH_FOR_VIEW_DETAILD_CARD': {
     
     return {...state};
 }
+case  'KEY_SEARCH_BOOK': {
+    state.keySearch = action.keySearch;
+    return {...state}
+
+}
+
    
         default: return {...state}
     }

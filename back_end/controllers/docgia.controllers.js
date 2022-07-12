@@ -1,6 +1,6 @@
 const {tbDocGia,sequelize} =require('../models')
 const createReader = async (req, res) => {
-  const {MaThongTinChung,MaThe,MaAcount} = req.body; 
+  const {MaThongTinChung,MaThe,MaAcount} = req.body; //thong tinn ma nguoi dung nhap trong form input
  try {
       const newReader = await tbDocGia.create({MaThongTinChung,MaThe,MaAcount});
       res.status(201).send(newReader);

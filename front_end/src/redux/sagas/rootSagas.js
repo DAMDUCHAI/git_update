@@ -13,6 +13,8 @@ import * as commentSaga from './libraryManageSagas/commentSaga'
 import * as moneySaga from './libraryManageSagas/moneySaga'
 import * as rulesSaga from './libraryManageSagas/rulesSaga'
 import * as staffSaga from './libraryManageSagas/staffSaga'
+import * as validateSaga from './libraryManageSagas/validateSaga'
+import * as dasboardSaga from './libraryManageSagas/dasboardSaga'
 
 
 export function* rootSagas() {
@@ -97,10 +99,25 @@ export function* rootSagas() {
     commentSaga.followDeleteCommentSaga(),
     bookSaga.followPreviewGiveBookSaga(),
 
-    moneySaga.followGetListMoneyDetaildByReaderSaga()
+    moneySaga.followGetListMoneyDetaildByReaderSaga(),
+
+    borrowSagas.followGetcountBorrowBookByMonthSaga(),
 
 
 
+    validateSaga.followGetListMaSinhVienSaga(),
+    validateSaga.followGetListEmailSaga(),
+    validateSaga.followGetListCCCDSaga(),
+    validateSaga.followGetListPhoneSaga(),
+
+
+
+    dasboardSaga.followGetNumberOfUnpaidBooks(),
+    dasboardSaga.followGetTotalNumberOfBooks(),
+    dasboardSaga.followGetCountNumberOfLostBooks(),
+    dasboardSaga.followGetCountNumberReader(),
+    dasboardSaga.followGetCountBookLate(),
+    dasboardSaga.followGetCountBookEarly(),
   ])
 
   

@@ -11,7 +11,6 @@ import { UPDATE_LOGIN, NOTIFICATION_LOGIN } from "../../constant/libraryManager/
 
 //login
 function* loginAcount(action) {
-
     try {
 
         const { data, status } = yield call(() => AcountServices.loginAcount(action.loginCreate));

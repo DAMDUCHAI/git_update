@@ -4,10 +4,10 @@ const { dayDifference } = require('../util/dayDifference/dayDifference')
 
 
 const createBook = async (req, res) => {
-  const { Ten, MaTacGia, MaTheLoai, MaNXB, MaKeSach, NamXB, Gia, SoLgDauSach, SoLgHienTai, NoiDung } = req.body;
+  const { Ten, MaTacGia, MaTheLoai, MaNXB, MaKeSach, NamXB, Gia, SoLgDauSach, NoiDung } = req.body;
   try {
     const AnhSach=`http://localhost:4500/${req.file.path}`
-    const newBook = await tbSach.create({ Ten, MaTacGia, MaTheLoai, MaNXB, AnhSach,MaKeSach, NamXB, Gia, SoLgDauSach, SoLgHienTai, NoiDung });
+    const newBook = await tbSach.create({ Ten, MaTacGia, MaTheLoai, MaNXB, AnhSach,MaKeSach, NamXB, Gia, SoLgDauSach, SoLgHienTai:SoLgDauSach, NoiDung });
     res.status(201).send(newBook);
   } catch (error) {
     res.status(500).send(error);
@@ -73,7 +73,6 @@ const updateBook = async (req, res) => {
       },
     });
 
-    console.log('book',book);
     book.Ten = Ten;
     book.MaTacGia = MaTacGia;
     book.MaTheLoai = MaTheLoai;
@@ -202,8 +201,21 @@ const createBorrowDetaildBook = async (req, res) => {
 
 
   try {
+    const book = await tbSach.findOne({
+      where: {
+        id:MaSach
+      },
+    });
+   const SoLgHienTai=book.SoLgHienTai;
+   if(SoLgHienTai==0){
+    res.status(201).send('Không còn sách để mượn');
+   }else{
     const newBorrowDetaild = await tbFieuSachChiTiet.create({ MaSach, MaTinhTrang, MaFieuSach });
+    book.SoLgHienTai=SoLgHienTai-1;
+    await book.save();
     res.status(200).send(newBorrowDetaild);
+   }
+    
   } catch (error) {
     res.status(500).send(error);
   }
@@ -246,11 +258,12 @@ const viewDetaildBookCard = async (req, res) => {
 const giveBookBack = async (req, res) => {
   const { id } = req.params;
   const { MaTinhTrang } = req.body;
-
+  const [results] = await sequelize.query(`select tbsaches.Gia,tbsaches.id ,tbfieusaches.HenTra from tbfieusachchitiets left join
+  tbsaches on tbsaches.id=tbfieusachchitiets.MaSach inner join tbfieusaches 
+on tbfieusachchitiets.MaFieuSach=tbfieusaches.id where tbfieusachchitiets.id=${id}`)
   const NgayTra = new Date();
   if (MaTinhTrang == 3) {
-    const [results] = await sequelize.query(`select tbsaches.Gia from tbfieusachchitiets left join
-             tbsaches on tbsaches.id=tbfieusachchitiets.MaSach where tbfieusachchitiets.id=${id}`)
+ 
     const TienFat = results[0].Gia;
     const LyDo = 'Mất Sách';
     const phat = await tbPhat.create({ TienFat, LyDo });
@@ -271,9 +284,7 @@ const giveBookBack = async (req, res) => {
     return;
   }
 
-  const [results] = await sequelize.query(`select HenTra from tbfieusaches inner join tbfieusachchitiets 
-  on tbfieusachchitiets.MaFieuSach=tbfieusaches.id where tbfieusachchitiets.id=${id}
-  `)
+ 
 
   const HenTra = new Date(results[0].HenTra);
   const numberDay = dayDifference( NgayTra,HenTra)
@@ -319,8 +330,13 @@ const giveBookBack = async (req, res) => {
 
 
   }
-
-
+  const book = await tbSach.findOne({
+    where: {
+      id:results[0].id
+    },
+  });
+ book.SoLgHienTai=book.SoLgHienTai+1;
+ await book.save();
 };
 
 //xem thong tin truoc khi give book
@@ -344,8 +360,7 @@ const previewGiveBook = async (req, res) => {
   
     return;
   }
-const event = new Date('2022-07-01T05:18:06.000Z');
-console.log(event.toLocaleString('en-GB', { timeZone: 'UTC' }));
+
 
   let numberDay = dayDifference( NgayTra,HenTra)
   if (numberDay >= 0) {

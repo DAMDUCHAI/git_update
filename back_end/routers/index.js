@@ -18,6 +18,8 @@ const {commentRouter} =require("./comment.routers")
 const {tienphatRouter} =require("./tienphat.routers")
 const {noiquyRouter} =require("./noiquy.routers")
 const {nhanvienRouter} =require("./nhanvien.routers")
+const {validateRouter} =require("./validate.routers")
+const {dashboardRouter} =require("./dashboard.routers")
 
 
 
@@ -38,8 +40,10 @@ rootRouter.use("/comment", commentRouter);
 rootRouter.use("/money", tienphatRouter);
 rootRouter.use("/rules", noiquyRouter);
 rootRouter.use("/staff", nhanvienRouter);
+rootRouter.use("/validate", validateRouter);
+rootRouter.use("/dashboard", dashboardRouter);
 
-nhanvienRouter
+
 
 module.exports = {
     rootRouter,

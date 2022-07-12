@@ -16,6 +16,9 @@ import FormViewBookByReader from '../Modal/FormViewBookByReader';
 
 export default function ReaderComponents() {
   const dispatch = useDispatch();
+  const keySearch = useSelector(state => state.readerReducers.keySearch);
+
+
   const renderBanAcount=(isStatus,id)=>{
     if(isStatus==='BAN'){
     return <>
@@ -24,7 +27,7 @@ export default function ReaderComponents() {
                              type:BAN_ACOUNT_SAGA,
                              id:id
                            })
-                           dispatch({ type: GET_ALL_READER_SAGA })
+                           dispatch({ type: GET_ALL_READER_SAGA,name:keySearch })
 
                           }}>
                               <UnlockOutlined style={{ fontSize: 17 }} />
@@ -38,7 +41,7 @@ export default function ReaderComponents() {
                                   type:BAN_ACOUNT_SAGA,
                                   id:id
                                 })
-                                dispatch({ type: GET_ALL_READER_SAGA })
+                                dispatch({ type: GET_ALL_READER_SAGA ,name:keySearch})
 
                           }}>
                               <LockOutlined style={{ fontSize: 17 }} />
@@ -51,6 +54,7 @@ export default function ReaderComponents() {
   }
   const readerList = useSelector(state => state.readerReducers.readerList);
 
+  
   const [keyword, setKeyword] = useState('');
     
   function handleInputChange(e) {
@@ -65,8 +69,9 @@ export default function ReaderComponents() {
   })
   useEffect(() => {
     dispatch({ type: 'SET_WIDTH', widthDrawer: '520' });
-
     dispatch({ type: GET_ALL_READER_SAGA,name:'' })
+    
+ 
 
 }, [])
 

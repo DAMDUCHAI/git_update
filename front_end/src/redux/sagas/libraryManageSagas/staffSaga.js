@@ -16,7 +16,12 @@ function *getListStaffSaga(action) {
         yield put({
             type: DISPLAY_LOADING
         })
+
         yield delay (500);
+        yield put({
+            type: 'KEY_SEARCH_STAFF',
+            keySearch:action.name
+        })
         const {data,status} = yield call( () => StaffServices.getAllStaff(action.name));
      
    
@@ -58,18 +63,18 @@ const staffCreate={
 
         const { data, status } = yield call(() => StaffServices.createStaff(staffCreate));
 
-        if (status === STATUS_CODE.SUCCESS) {
-            console.log(data)
-            notifiFunction('success','Add staff successfully !')
-            
-        }
-    
+     
+        const st = yield call( () => StaffServices.getAllStaff(action.name));
+        yield put({
+            type:GET_ALL_STAFF,
+            staffList:st.data
+        })
+        notifiFunction('success','Add staff successfully !')
 
         yield put({
             type:'CLOSE_DRAWER'
         })
   
-        yield call(getListStaffSaga);
     } catch (err) {
         if(localStorage.getItem('id_user')===null){
             notifiFunction('warning','You need to login !') ;
@@ -104,21 +109,20 @@ function* updateStaffSaga(action) {
         const updateAcount = yield call(() => AcountServices.updateAcount(action.MaAcount,action.updateAcount));
 
 
-        if (updateThongTin.status === STATUS_CODE.SUCCESS && updateAcount.status === STATUS_CODE.SUCCESS
-            ) {
-            notifiFunction('success','Update staff successfully !')
+     
 
-      
-        }
-        else {
-            notifiFunction('error','Update staff fail !')
-        }
+            const st = yield call( () => StaffServices.getAllStaff(action.name));
+            yield put({
+                type:GET_ALL_STAFF,
+                staffList:st.data
+            })
+            notifiFunction('success','Update staff successfully !')
     
    
         yield put({
             type:'CLOSE_DRAWER'
         })
-        yield call(getListStaffSaga);
+    
     } catch (err) {
         if(localStorage.getItem('id_user')===null){
             notifiFunction('warning','You need to login !') ;

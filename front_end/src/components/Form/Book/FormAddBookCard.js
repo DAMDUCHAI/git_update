@@ -106,10 +106,17 @@ const AddBookCardWithFormik = withFormik({
     props.dispatch({
       type:CREATE_BOOK_CARD_SAGA,
       bookCardCreate:values,
+      name:props.keySearch
+
   })
   },
 
   displayName: "FormAddBookCard",
 })(FormAddBookCard);
+const mapStateToProps = (state) => ({
 
-export default connect()(AddBookCardWithFormik);
+  keySearch: state.bookReducers.keySearch
+
+
+})
+export default connect(mapStateToProps)(AddBookCardWithFormik);

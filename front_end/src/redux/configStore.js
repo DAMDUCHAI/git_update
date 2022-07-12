@@ -25,12 +25,15 @@ import rulesReducers from './reducers/rulesReducers'
 import staffReducers from './reducers/staffReduceres'
 import imgReducers from './reducers/imgReducers'
 import giveBookBackReducers from './reducers/giveBookBackReducers'
+import validateReducers from './reducers/validateReducers'
 
+import dashboardReducers from './reducers/dashboardReducers'
 
 
 const sagaMiddleware = createSagaMiddleware();
 const reducer = combineReducers({
   // here we will be adding reducers
+  
   bookReducers,
   authorReducers,
   bookshelfReducers,
@@ -52,7 +55,10 @@ const reducer = combineReducers({
   rulesReducers,
   staffReducers,
   imgReducers,
-  giveBookBackReducers
+  giveBookBackReducers,
+  validateReducers,
+ 
+
 })
 const store = configureStore({
   reducer,

@@ -15,11 +15,10 @@ const FormEditBook =(props)=> {
       //componentdidmount
       useEffect(() => {
 
-        dispatch({ type: GET_ALL_AUTHOR_SAGA })
-        dispatch({ type:GET_ALL_BOOKSHELF_SAGA})
-        dispatch({ type: GET_ALL_CATEGORY_SAGA })
-        dispatch({ type: GET_ALL_CATEGORY_SAGA })
-        dispatch({ type:   GET_ALL_PUBLISHER_SAGA })
+        dispatch({ type: GET_ALL_AUTHOR_SAGA ,name:''})
+        dispatch({ type:GET_ALL_BOOKSHELF_SAGA,name:''})
+        dispatch({ type: GET_ALL_CATEGORY_SAGA ,name:''})
+        dispatch({ type:   GET_ALL_PUBLISHER_SAGA,name:'' })
       
      
         
@@ -107,7 +106,7 @@ const renderOptionAuthor=()=>{
         </div>
   </div>
   <div className="row">
-  <div className="col-4"> 
+  <div className="col-6"> 
     <label for="" className="form-label">Giá</label>
     <input type="text" className="form-control" name="Gia"  onChange={handleChange}
         onBlur={handleBlur}
@@ -119,7 +118,7 @@ const renderOptionAuthor=()=>{
        ) : null}
         
         </div>
-    <div className="col-4"> 
+    <div className="col-6"> 
     <label for="" className="form-label">Số lượng đầu sách</label>
     <input type="text" className="form-control" name="SoLgDauSach"  onChange={handleChange}
         onBlur={handleBlur}
@@ -131,18 +130,7 @@ const renderOptionAuthor=()=>{
         
         </div>
 
-  <div className="col-4"> 
-    <label for="" className="form-label">Số lượng hiện tại</label>
-    <input type="text" className="form-control" name="SoLgHienTai" onChange={handleChange}
-        onBlur={handleBlur}
-        value={values.SoLgHienTai} />
-        
-        
-        {touched.SoLgHienTai && errors.SoLgHienTai ? (
-  <div className="text-danger">{errors.SoLgHienTai}</div>
-       ) : null}
-        
-        </div>
+
    
   </div>
   <div className="row">
@@ -200,10 +188,11 @@ const renderOptionAuthor=()=>{
     <label for="" className="form-label">Image book</label>
     
 <input className="form-control" name="book_img" type="file" onChange={(event) => {
-    dispatch({
-      type:'IMG_PREVIEW',
-      imgPreview:URL.createObjectURL(event.target.files[0])
-    })
+
+  dispatch({
+    type:'IMG_PREVIEW',
+    imgPreview:URL.createObjectURL(event.target.files[0])
+  })
   setFieldValue("book_img", event.currentTarget.files[0]);
 }} />
         {touched.book_img && errors.book_img ? (
@@ -212,7 +201,9 @@ const renderOptionAuthor=()=>{
         
         
         </div>
-        <div style={{width:'150px',height:'150px',position:'absolute',right:'169px',bottom:'-69px'}}>
+
+
+    <div style={{width:'150px',height:'150px',position:'absolute',right:'169px',bottom:'-69px'}}>
       <img src={imgPreview} style={{width:'100%',height:'100%',objectFit:'cover'}} alt="Select img"></img>
       </div>
     </form>
@@ -229,7 +220,7 @@ const EditBookWithFormik = withFormik({
   mapPropsToValues: (props) => {    
     const { bookEdit } = props;
     console.log(bookEdit);
-  return { Ten:bookEdit.Ten, NamXB: bookEdit.NamXB,Gia: bookEdit.Gia,SoLgHienTai:bookEdit.SoLgHienTai,SoLgDauSach:bookEdit.SoLgDauSach,MaTacGia:bookEdit.MaTacGia,MaNXB:bookEdit.MaNXB,MaKeSach:bookEdit.MaKeSach,MaTheLoai:bookEdit.MaTheLoai,NoiDung:bookEdit.NoiDung,book_img:'' } },
+  return { Ten:bookEdit.Ten, NamXB: bookEdit.NamXB,Gia: bookEdit.Gia,SoLgDauSach:bookEdit.SoLgDauSach,MaTacGia:bookEdit.MaTacGia,MaNXB:bookEdit.MaNXB,MaKeSach:bookEdit.MaKeSach,MaTheLoai:bookEdit.MaTheLoai,NoiDung:bookEdit.NoiDung,book_img:'' } },
 
 
 
@@ -238,7 +229,6 @@ const EditBookWithFormik = withFormik({
     Ten:Yup.string().required('This field  is required'),
     NamXB:Yup.string().required().matches(yearRegex, 'NamXB is not valid ,length is 10'),
     Gia:Yup.number().required(),
-    SoLgHienTai:Yup.string().required().matches(numberRegex, 'This field  is natural number, start 1'),
     SoLgDauSach:Yup.string().required().matches(numberRegex, 'This field  is natural number, start 1'),
     NoiDung:Yup.string().required('This field  is required'),
     book_img:Yup.string().required('This field  is required'),
@@ -251,7 +241,6 @@ const EditBookWithFormik = withFormik({
     formData.append('Ten',values.Ten)
     formData.append('NamXB',values.NamXB)
     formData.append('Gia',values.Gia)
-    formData.append('SoLgHienTai',values.SoLgHienTai)
     formData.append('SoLgDauSach',values.SoLgDauSach)
     formData.append('NoiDung',values.NoiDung)
     formData.append('book_img',values.book_img)
@@ -265,8 +254,8 @@ const EditBookWithFormik = withFormik({
     props.dispatch({
       type:UPDATE_BOOK_SAGA,
       bookUpdate:formData,
-
       idBook: props.bookEdit.id,
+      name:props.keySearch
   })
   },
 
@@ -274,7 +263,9 @@ const EditBookWithFormik = withFormik({
 })(FormEditBook);
 const mapStateToProps = (state) => ({
 
-  bookEdit: state.bookReducers.bookEdit
+  bookEdit: state.bookReducers.bookEdit,
+  keySearch: state.bookReducers.keySearch
+
 
 })
 export default connect(mapStateToProps)(EditBookWithFormik);

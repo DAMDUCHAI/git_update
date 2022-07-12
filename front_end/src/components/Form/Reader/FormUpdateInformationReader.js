@@ -14,7 +14,8 @@ const FormUpdateInformationReader =(props)=> {
       //componentdidmount
       useEffect(() => {
         dispatch({ type: 'SET_SUBMIT', submitFunction: handleSubmit });
-    
+        dispatch({ type: 'GET_LIST_PHONE_SAGA'})
+        dispatch({ type: 'GET_LIST_CCCD_SAGA' })
    
     }, [])
     const {
@@ -26,7 +27,12 @@ const FormUpdateInformationReader =(props)=> {
       handleSubmit,
       setFieldValue
   } = props;
- 
+  const phoneList = useSelector(state => state.validateReducers.phoneList);
+  const cccdList = useSelector(state => state.validateReducers.cccdList);
+  const readerEdit = useSelector(state => state.readerReducers.readerEdit);
+
+  const ListCCCDFilter=cccdList.filter((item=>item.CCCD!==readerEdit.CCCD))
+  const ListPhoneFilter=phoneList.filter((item=>item.Phone!==readerEdit.Phone))
   return (
 
     <>
@@ -67,7 +73,9 @@ const FormUpdateInformationReader =(props)=> {
   <div className="text-danger">{errors.CCCD}</div>
        ) : null}
         
-        
+        {touched.CCCD && !errors.CCCD && ListCCCDFilter.some((item,key)=>item.CCCD==values.CCCD)==true ? (
+  <div className="text-danger">Đã tồn tại CCCD này trong hệ thống</div>
+       ) : null}
         
         </div>
                 <div className="col-6"> 
@@ -80,6 +88,9 @@ const FormUpdateInformationReader =(props)=> {
   <div className="text-danger">{errors.Phone}</div>
        ) : null}
         
+        {touched.Phone && !errors.Phone && ListPhoneFilter.some((item,key)=>item.Phone==values.Phone)==true ? (
+  <div className="text-danger">Đã tồn tại sđt này trong hệ thống</div>
+       ) : null}
         
         </div>
                 <div className="col-6"> 

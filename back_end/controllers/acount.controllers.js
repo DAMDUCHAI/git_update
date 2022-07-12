@@ -103,7 +103,7 @@ const login = async (req, res) => {
       const token = jwt.sign(
         { Email: acount.Email, Role: acount.Role },
         "team3_swp391",
-        { expiresIn: 60 * 60 }
+        { expiresIn: "10h" }
       );
       res.status(200).send({ message: "Đăng Nhập Thành Công ! ", token, Role: acount.Role, id: acount.id });
     } else {

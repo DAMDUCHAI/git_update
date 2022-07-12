@@ -36,7 +36,6 @@ export default function AuthorComponents() {
     dispatch({ type: GET_ALL_AUTHOR_SAGA,name:'' })
 
 }, [])
-console.log(authorList);
 const handleChange = (pagination, filters, sorter) => {
     console.log('Various parameters', pagination, filters, sorter);
     setState({

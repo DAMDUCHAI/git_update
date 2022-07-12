@@ -4,7 +4,11 @@ import { Table ,Button,} from 'antd';
 import { useSelector, useDispatch } from 'react-redux'
 import { FormOutlined,  } from '@ant-design/icons'
 export default function FormViewBookByReader() {
-
+  const formatDate=(str)=>{
+ 
+    const event = new Date(str);
+    return event.toLocaleString('en-GB', { timeZone: 'UTC' });
+    }
 
     const [state,setState]=useState({
       filteredInfo: null,
@@ -31,6 +35,11 @@ export default function FormViewBookByReader() {
         title: 'NgayMuon',
         dataIndex: 'NgayMuon',
         key: 'NgayMuon',
+        
+     render: (text, record, index) => {
+        return  formatDate(record.NgayMuon)
+  
+      }
     
   
     },
@@ -55,7 +64,11 @@ export default function FormViewBookByReader() {
         title: 'Hen Tra',
         dataIndex: 'HenTra',
         key: 'HenTra',
-    
+        
+        render: (text, record, index) => {
+           return  formatDate(record.HenTra)
+     
+         }
       },
 
       {
@@ -70,7 +83,6 @@ export default function FormViewBookByReader() {
         dataIndex: '',
         key: 'x',
         render: (text, record, index) => {
-          const ButtonGroups = Button.Group;
             return <div>
          
               <button className="btn mr-2 btn-primary" onClick={() => {

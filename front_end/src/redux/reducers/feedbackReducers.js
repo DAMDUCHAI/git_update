@@ -3,7 +3,8 @@ import { GET_ALL_FEEDBACK,VIEW_FEEDBACK } from "../constant/libraryManager/feedB
 
 const stateDefault = {
     feedbackList:[],
-    feedback:{TieuDe:'',NoiDung:''}
+    feedback:{TieuDe:'',NoiDung:''},
+    typeFilter:''
    
 }
 
@@ -24,7 +25,11 @@ const feedbackReducers = (state = stateDefault,action) => {
             
             return {...state};
     }
- 
+    case  'TYPE_FILTER_FEEDBACK': {
+        state.typeFilter = action.typeFilter;
+        return {...state}
+
+    }
 
         default: return {...state}
     }

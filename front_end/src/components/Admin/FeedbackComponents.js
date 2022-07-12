@@ -25,6 +25,7 @@ export default function FeedbackComponents() {
     
   }
   const feedbackList = useSelector(state => state.feedbackReducers.feedbackList);
+  const typeFilter = useSelector(state => state.feedbackReducers.typeFilter);
 
   const [state,setState]=useState({
     filteredInfo: null,
@@ -108,7 +109,8 @@ const handleChange = (pagination, filters, sorter) => {
 
 dispatch({ 
     type:UPDATE_TRANGTHAI_FEEDBACK_SAGA,id:record.id,
-    TrangThai:1,NoiDung:record.NoiDung,TieuDe:record.TieuDe
+    TrangThai:1,NoiDung:record.NoiDung,TieuDe:record.TieuDe,
+    typeFilter:typeFilter
 })
                          const action = {
                             type: 'OPEN_MODAL',

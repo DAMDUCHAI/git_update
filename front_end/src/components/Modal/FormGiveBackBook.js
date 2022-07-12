@@ -16,14 +16,17 @@ const FormGiveBackBook = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-
+        dispatch({
+            type:PREVIEW_GIVE_BOOK_SAGA,
+            idFieuSachChiTiet:MaFieuSach,
+            TinhTrang:2
+          })
         //Load sự kiện submit lên drawer nút submit
         dispatch({ type: 'SET_SUBMIT_MODAL', submitFunction: handleSubmit });
     }, [])
     const {
         values,
-        handleChange,
-        handleBlur,
+        
         handleSubmit,
         setFieldValue
      
@@ -44,20 +47,17 @@ const FormGiveBackBook = (props) => {
   dispatch({
     type:PREVIEW_GIVE_BOOK_SAGA,
     idFieuSachChiTiet:MaFieuSach,
-    TinhTrang:values.MaTinhTrang
+    TinhTrang:event.target.value
   })
 
 }}>
-  <option value="1" disabled>
-                          
-                          --Chọn Nghiệp Vụ--
-                       </option>
-                            <option value="2">
-                          
-                               Làm Mất
+
+                            <option value="2"  selected>
+                            Trả Sách
+                              
                             </option>
                             <option value="3">
-                            Trả Sách
+                            Làm Mất
                             </option>
                         </select>
                         
@@ -84,7 +84,7 @@ const FormGiveBackBook = (props) => {
 const GiveBackBookWithFormik = withFormik({
     enableReinitialize: true,
     mapPropsToValues: (props) => {
-        return {  MaTinhTrang: '' }
+        return {  MaTinhTrang: '2' }
     },
 
 

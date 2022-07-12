@@ -63,10 +63,14 @@ function *getListFeedback(action) {
             type: DISPLAY_LOADING
         })
         yield delay (500);
+        yield put({
+            type: 'TYPE_FILTER_FEEDBACK',
+            typeFilter:action.typeFilter
+        })
         const {data,status} = yield call( () => FeedbackServices.getAllFeddBack(action.typeFilter));
      
    
-     if(status === STATUS_CODE.SUCCESS) {
+
             yield put({
                 type:GET_ALL_FEEDBACK,
                 feedbackList:data
@@ -74,7 +78,7 @@ function *getListFeedback(action) {
             yield put({
                 type: HIDE_LOADING
             })
-        }
+        
     }catch(err) {
         console.log(err)
     }
@@ -104,7 +108,11 @@ function* updateTrangThaiSaga(action) {
             type:VIEW_FEEDBACK,
             feedback:{TieuDe:data.TieuDe,NoiDung:data.NoiDung},
         })
-        yield call(getListFeedback);
+        const getAllFeddBack = yield call( () => FeedbackServices.getAllFeddBack(action.typeFilter));
+        yield put({
+            type:GET_ALL_FEEDBACK,
+            feedbackList:getAllFeddBack.data
+        })
     } catch (err) {
 
         console.log(err);

@@ -1,7 +1,7 @@
 
 import './App.css';
 import {React,Fragment} from 'react'
-import { BrowserRouter, NavLink, Route, Switch, useHistory } from 'react-router-dom';
+import { Switch,  } from 'react-router-dom';
 import { HomeAdminTemplates } from './templates/HomeAdminTemplates/HomeAdminTemplates';
 
 import DashboardComponents from './components/Admin/DashboardComponents';
@@ -38,7 +38,7 @@ function App() {
 
 <Switch>
 <HomeAdminTemplates path="/dashboard" exact Component={DashboardComponents}/>
-<HomeAdminTemplates path="/" exact Component={BookComponents}/>
+<HomeAdminTemplates path="/" exact Component={DashboardComponents}/>
 <HomeAdminTemplates path="/book-manager" exact Component={BookComponents}/>
 <HomeAdminTemplates path="/category-manager" exact Component={CategoryComponents}/>
 <HomeAdminTemplates path="/author-manager" exact Component={AuthorComponents}/>
@@ -54,9 +54,6 @@ function App() {
 <HomeAdminTemplates path="/staff-manager" exact Component={StaffComponents}/>
 <HomeAdminTemplates path="/bookshelf-manager" exact Component={BookshelfComponents}/>
 <HomeAdminTemplates path="/book-card" exact Component={BookCardComponents}/>
-
-
-
 </Switch>
 
 </div>

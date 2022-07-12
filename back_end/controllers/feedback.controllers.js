@@ -1,7 +1,7 @@
 const {tbFeedBack,sequelize} =require('../models')
 const createFeedBack = async (req, res) => {
-  const {TieuDe,NoiDung,MaAcount} = req.body; 
-  const TrangThai=0;
+  const {TieuDe,NoiDung,MaAcount} = req.body;   // lay data tu nguoi dung
+  const TrangThai=0; // chua xem
   
   const [results] = await sequelize.query(`select tbdocgia.id from tbacounts left join tbdocgia on tbdocgia.MaAcount=tbacounts.id where tbacounts.id= ${MaAcount} `)
 const MaDocGia =results[0].id

@@ -37,10 +37,25 @@ console.log('fdsagfsdagdsgsdfgfdg,',id);
     
   };
 
+  const countBorrowBookByMonth = async (req, res,email) => {
+
+    try {
+        const [results] = await sequelize.query(`SELECT MONTH(tbfieusaches.NgayMuon) as Thang,COUNT(tbfieusaches.id)  as SoLuongMuon
+        FROM tbfieusaches  
+        WHERE YEAR(tbfieusaches.NgayMuon) = 2022  
+        GROUP BY MONTH(tbfieusaches.NgayMuon) order by MONTH(tbfieusaches.NgayMuon)` )
+      res.status(201).send(results);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+    
+  };
+
 module.exports = {
  
     getListBorrowByReader,
     getListBorrowByEmail,
+    countBorrowBookByMonth
 
  
   };

@@ -18,6 +18,11 @@ const FormAddReader =(props)=> {
         //Load sự kiện submit lên drawer nút submit
         dispatch({ type: 'SET_SUBMIT', submitFunction: handleSubmit });
         dispatch({ type: GET_ALL_GENDER_SAGA })
+
+        dispatch({ type: 'GET_LIST_PHONE_SAGA'})
+        dispatch({ type: 'GET_LIST_CCCD_SAGA' })
+        dispatch({ type: 'GET_LIST_EMAIL_SAGA'})
+        dispatch({ type: 'GET_LIST_MASINHVIEN_SAGA' })
     }, [])
     const {
       values,
@@ -29,6 +34,10 @@ const FormAddReader =(props)=> {
       setFieldValue
   } = props;
   const imgPreview = useSelector(state => state.imgReducers.imgPreview);
+  const phoneList = useSelector(state => state.validateReducers.phoneList);
+  const emailList = useSelector(state => state.validateReducers.emailList);
+  const cccdList = useSelector(state => state.validateReducers.cccdList);
+  const masinhvienList = useSelector(state => state.validateReducers.masinhvienList);
 
 
   return (
@@ -54,8 +63,14 @@ const FormAddReader =(props)=> {
         onBlur={handleBlur}
         value={values.Email}/>
         
+        
+
         {touched.Email && errors.Email ? (
   <div className="text-danger">{errors.Email}</div>
+       ) : null}
+        
+        {touched.Email && !errors.Email && emailList.some((item,key)=>item.Email==values.Email)==true ? (
+  <div className="text-danger">Đã tồn tại email này trong hệ thống</div>
        ) : null}
         
         </div>
@@ -83,6 +98,10 @@ const FormAddReader =(props)=> {
   <div className="text-danger">{errors.Phone}</div>
        ) : null}
         
+
+        {touched.Phone && !errors.Phone && phoneList.some((item,key)=>item.Phone==values.Phone)==true ? (
+  <div className="text-danger">Đã tồn tại sđt này trong hệ thống</div>
+       ) : null}
         </div>
 
   <div className="col-6"> 
@@ -94,7 +113,9 @@ const FormAddReader =(props)=> {
         {touched.CCCD && errors.CCCD ? (
   <div className="text-danger">{errors.CCCD}</div>
        ) : null}
-        
+             {touched.CCCD && !errors.CCCD && cccdList.some((item,key)=>item.CCCD==values.CCCD)==true ? (
+  <div className="text-danger">Đã tồn tại CCCD này trong hệ thống</div>
+       ) : null}
         </div>
     
 
@@ -142,7 +163,9 @@ const FormAddReader =(props)=> {
         {touched.MaSinhVien && errors.MaSinhVien ? (
   <div className="text-danger">{errors.MaSinhVien}</div>
        ) : null}
-        
+             {touched.MaSinhVien && !errors.MaSinhVien && masinhvienList.some((item,key)=>item.MaSinhVien==values.MaSinhVien)==true ? (
+  <div className="text-danger">Đã tồn tại MaSinhVien này trong hệ thống</div>
+       ) : null}
         </div>
 
 
@@ -205,15 +228,14 @@ const EmailRegex=/^[a-zA-Z]+(he|HE|se|SE)[1-9]{6}@fpt.edu.vn$/
 const CCCDRegex=/^[0-9]{12}$/
 
 
-
 const CreateReaderWithFormik = withFormik({
   enableReinitialize: true,
-  mapPropsToValues: () => {    
+  mapPropsToValues: (props) => {    
+
 
   return {MaSinhVien:"", NgaySinh:"",Ten:"",DiaChi:"",Phone:"",Email:"",CCCD:"",MaGioiTinh:"1",HSD:"",NgayCap:"",avatar:""} },
-
-  // Custom sync validation
-  validationSchema: Yup.object().shape({
+  validationSchema : Yup.object().shape({
+    
     MaSinhVien:Yup.string().required().matches(MaSinhVienRegex, 'MaSinhVien is not valid ,vd HE141462'),
     Ten:Yup.string().required('This field  is required'),
     DiaChi:Yup.string().required('This field  is required'),
@@ -258,7 +280,6 @@ formData.append('MaGioiTinh',values.MaGioiTinh)
       name:props.keySearch
       
   })
-console.log('values',values);
 
   },
 
@@ -266,7 +287,8 @@ console.log('values',values);
 })(FormAddReader);
 const mapStateToProps = (state) => ({
 
-  keySearch: state.readerReducers.keySearch
+  keySearch: state.readerReducers.keySearch,
+
 
 })
 export default connect(mapStateToProps)(CreateReaderWithFormik);

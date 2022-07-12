@@ -14,10 +14,12 @@ const FormAddStaff =(props)=> {
   const dispatch = useDispatch();
       //componentdidmount
       useEffect(() => {
-
-        //Load sự kiện submit lên drawer nút submit
         dispatch({ type: 'SET_SUBMIT', submitFunction: handleSubmit });
         dispatch({ type: GET_ALL_GENDER_SAGA })
+
+        dispatch({ type: 'GET_LIST_PHONE_SAGA'})
+        dispatch({ type: 'GET_LIST_CCCD_SAGA' })
+        dispatch({ type: 'GET_LIST_EMAIL_SAGA'})
     }, [])
     const {
       values,
@@ -28,8 +30,15 @@ const FormAddStaff =(props)=> {
       handleSubmit,
       setFieldValue
   } = props;
-  const listGender=useSelector(state => state.genderReducers.genderList);
+  const imgPreview = useSelector(state => state.imgReducers.imgPreview);
 
+  const listGender=useSelector(state => state.genderReducers.genderList);
+  const phoneList = useSelector(state => state.validateReducers.phoneList);
+  const emailList = useSelector(state => state.validateReducers.emailList);
+  const cccdList = useSelector(state => state.validateReducers.cccdList);
+
+
+ 
   const renderOptionGender=()=>{
     return listGender.map((gender,index)=>{
       return  <option key={index} value={gender.id}>
@@ -40,7 +49,7 @@ const FormAddStaff =(props)=> {
   return (
 
     <>
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} enctype="multipart/form-data" style={{position:'relative'}}>
   
   <div className="row">
     <div className="col-6"> 
@@ -64,6 +73,10 @@ const FormAddStaff =(props)=> {
   <div className="text-danger">{errors.Email}</div>
        ) : null}
         
+
+        {touched.Email && !errors.Email && emailList.some((item,key)=>item.Email==values.Email)==true ? (
+  <div className="text-danger">Đã tồn tại email này trong hệ thống</div>
+       ) : null}
         </div>
 
   
@@ -88,6 +101,10 @@ const FormAddStaff =(props)=> {
         {touched.Phone && errors.Phone ? (
   <div className="text-danger">{errors.Phone}</div>
        ) : null}
+
+{touched.Phone && !errors.Phone && phoneList.some((item,key)=>item.Phone==values.Phone)==true ? (
+  <div className="text-danger">Đã tồn tại sđt này trong hệ thống</div>
+       ) : null}
         
         </div>
 
@@ -101,6 +118,10 @@ const FormAddStaff =(props)=> {
   <div className="text-danger">{errors.CCCD}</div>
        ) : null}
         
+
+        {touched.CCCD && !errors.CCCD && cccdList.some((item,key)=>item.CCCD==values.CCCD)==true ? (
+  <div className="text-danger">Đã tồn tại CCCD này trong hệ thống</div>
+       ) : null}
         </div>
     
 
@@ -148,6 +169,10 @@ const FormAddStaff =(props)=> {
     <label for="" className="form-label">Img avatar</label>
     
 <input className="form-control" name="avatar" type="file" onChange={(event) => {
+      dispatch({
+        type:'IMG_PREVIEW',
+        imgPreview:URL.createObjectURL(event.target.files[0])
+      })
   setFieldValue("avatar", event.currentTarget.files[0]);
 }} />
         {touched.avatar && errors.avatar ? (
@@ -160,7 +185,9 @@ const FormAddStaff =(props)=> {
 
 
   </div>
-
+  <div style={{width:'150px',height:'150px',position:'absolute',right:'169px',bottom:'-69px'}}>
+      <img src={imgPreview} style={{width:'100%',height:'100%',objectFit:'cover'}} alt="Select img"></img>
+      </div>
     </form>
 
 
@@ -213,7 +240,8 @@ const CreateStaffWithFormik = withFormik({
       type:CREATE_STAFF_SAGA,
       values:formData,
       Email:values.Email,
-      NgayHD:values.NgayHD
+      NgayHD:values.NgayHD,
+      name:props.keySearch
   })
 console.log(values);
 
@@ -221,5 +249,9 @@ console.log(values);
 
   displayName: "FormAddStaff",
 })(FormAddStaff);
+const mapStateToProps = (state) => ({
 
-export default connect()(CreateStaffWithFormik);
+  keySearch: state.staffReducers.keySearch
+
+})
+export default connect(mapStateToProps)(CreateStaffWithFormik);

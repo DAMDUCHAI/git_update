@@ -1,42 +1,42 @@
-const {tbNhaXuatBan,sequelize} =require('../models')
+const { tbNhaXuatBan, sequelize } = require('../models')
 const { Op } = require("sequelize");
 
 const createPublisher = async (req, res) => {
-  const {Ten,Phone,Email,DiaChi,NguoiDaiDien} = req.body; 
- try {
-      const newPublisher = await tbNhaXuatBan.create({Ten,Phone,Email,DiaChi,NguoiDaiDien});
-      res.status(201).send(newPublisher);
-    } catch (error) {
-      res.status(500).send(error);
+  const { Ten, Phone, Email, DiaChi, NguoiDaiDien } = req.body;
+  try {
+    const newPublisher = await tbNhaXuatBan.create({ Ten, Phone, Email, DiaChi, NguoiDaiDien });
+    res.status(201).send(newPublisher);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+
+};
+const getListPublisher = async (req, res) => {
+
+  try {
+    const { name } = req.query; // ô input nhap
+    if (name) {
+      const publisherList = await tbNhaXuatBan.findAll({
+        where: {
+          Ten: {
+            [Op.substring]: name // like %name%
+          }
+        }
+      });
+      res.status(200).send(publisherList);
+    } else {
+      const publisherList = await tbNhaXuatBan.findAll();
+      res.status(200).send(publisherList);
     }
 
-  };
-const getListPublisher = async (req, res) => {
-    
-    try {
-      const { name } = req.query;
-      if(name){
-        const publisherList = await tbNhaXuatBan.findAll({
-          where: {
-            Ten: {
-              [Op.substring]: name
-            }
-          }
-        });
-        res.status(200).send(publisherList);
-      }else{
-        const publisherList = await tbNhaXuatBan.findAll();
-        res.status(200).send(publisherList);
-      }
-      
-    } catch (error) {
-      res.status(500).send(error);
-    }
-  };
-const getPublisher= async (req, res) => {
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+const getPublisher = async (req, res) => {
   const { id } = req.params;
   try {
-    const publisher =await tbNhaXuatBan.findOne({
+    const publisher = await tbNhaXuatBan.findOne({
       where: {
         id,
       }
@@ -49,14 +49,13 @@ const getPublisher= async (req, res) => {
 }
 const updatePublisher = async (req, res) => {
   const { id } = req.params;
-  const {Ten,Phone,Email,DiaChi,NguoiDaiDien} = req.body;
+  const { Ten, Phone, Email, DiaChi, NguoiDaiDien } = req.body; //da ta nguoi dung nhap
   try {
     const publisher = await tbNhaXuatBan.findOne({
       where: {
         id,
       },
     });
-    Ten,Phone,Email,DiaChi,NguoiDaiDien
     publisher.Ten = Ten;
     publisher.Phone = Phone;
 
@@ -86,11 +85,11 @@ const deletePublisher = async (req, res) => {
   }
 };
 module.exports = {
- 
-    createPublisher,
-    getListPublisher,
-    getPublisher,
-    updatePublisher,
-    deletePublisher
- 
-  };
+
+  createPublisher,
+  getListPublisher,
+  getPublisher,
+  updatePublisher,
+  deletePublisher
+
+};

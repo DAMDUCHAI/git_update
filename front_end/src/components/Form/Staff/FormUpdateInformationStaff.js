@@ -27,7 +27,12 @@ const FormUpdateInformationStaff =(props)=> {
       handleSubmit,
       setFieldValue
   } = props;
- 
+  const phoneList = useSelector(state => state.validateReducers.phoneList);
+  const cccdList = useSelector(state => state.validateReducers.cccdList);
+  const staffEdit = useSelector(state => state.staffReducers.staffEdit);
+
+  const ListCCCDFilter=cccdList.filter((item=>item.CCCD!==staffEdit.CCCD))
+  const ListPhoneFilter=phoneList.filter((item=>item.Phone!==staffEdit.Phone))
   return (
 
     <>
@@ -68,7 +73,9 @@ const FormUpdateInformationStaff =(props)=> {
   <div className="text-danger">{errors.CCCD}</div>
        ) : null}
         
-        
+        {touched.CCCD && !errors.CCCD && ListCCCDFilter.some((item,key)=>item.CCCD==values.CCCD)==true ? (
+  <div className="text-danger">Đã tồn tại CCCD này trong hệ thống</div>
+       ) : null}
         
         </div>
                 <div className="col-6"> 
@@ -81,6 +88,9 @@ const FormUpdateInformationStaff =(props)=> {
   <div className="text-danger">{errors.Phone}</div>
        ) : null}
         
+        {touched.Phone && !errors.Phone && ListPhoneFilter.some((item,key)=>item.Phone==values.Phone)==true ? (
+  <div className="text-danger">Đã tồn tại sđt này trong hệ thống</div>
+       ) : null}
         
         </div>
                 <div className="col-6"> 

@@ -15,6 +15,8 @@ import FormEditStaff from '../Form/Staff/FormEditStaff';
 
 export default function StaffComponents() {
   const dispatch = useDispatch();
+  const keySearch = useSelector(state => state.staffReducers.keySearch);
+
   const renderBanAcount=(isStatus,id)=>{
     if(isStatus==='BAN'){
     return <>
@@ -23,7 +25,7 @@ export default function StaffComponents() {
                              type:BAN_ACOUNT_SAGA,
                              id:id
                            })
-                           dispatch({ type: GET_ALL_STAFF_SAGA })
+                           dispatch({ type: GET_ALL_STAFF_SAGA,name:keySearch })
 
                           }}>
                               <UnlockOutlined style={{ fontSize: 17 }} />
@@ -37,7 +39,7 @@ export default function StaffComponents() {
                                   type:BAN_ACOUNT_SAGA,
                                   id:id
                                 })
-                                dispatch({ type: GET_ALL_STAFF_SAGA })
+                                dispatch({ type: GET_ALL_STAFF_SAGA,name:keySearch })
 
                           }}>
                               <LockOutlined style={{ fontSize: 17 }} />
@@ -157,6 +159,10 @@ const handleChange = (pagination, filters, sorter) => {
                             staffEditModel: record
                         }
                         dispatch(actionEditReader);
+                        dispatch({
+                          type:'IMG_PREVIEW',
+                          imgPreview:record.img
+                        })
                     }}>
                         <FormOutlined style={{ fontSize: 17 }} />
                     </button>
@@ -184,6 +190,12 @@ const handleChange = (pagination, filters, sorter) => {
                             Component: <FormAddStaff />,
                         }
                         dispatch(action);
+                        dispatch({
+                          type:'IMG_PREVIEW',
+                          imgPreview:''
+                        })
+                      
+                    
                       
                     }}>
             Thêm Nhân Viên

@@ -60,11 +60,12 @@ const handleChange = (pagination, filters, sorter) => {
     {
       title: 'id',
       dataIndex: 'id',
-      key: 'id',
-      sorter: (item2, item1) => {
-          return item2.id - item1.id;
-      },
-      sortDirections: ['descend'],
+      key: 'id',  
+      render: (text, record, index) => {
+
+      return  <span>{index+1}</span>
+        },
+   
 
   },
     {
@@ -156,7 +157,7 @@ const handleChange = (pagination, filters, sorter) => {
                     
                         title="Are you sure to delete this book?"
                         onConfirm={() => {
-                            dispatch({ type: DELETE_BOOK_SAGA, id: record.id })
+                            dispatch({ type: DELETE_BOOK_SAGA, id: record.id,name:keyword })
                         }}
 
                         okText="Yes"
@@ -174,7 +175,7 @@ const handleChange = (pagination, filters, sorter) => {
                         title="Are you sure add book into book card?"
                         onConfirm={() => {
                     
-                            dispatch({ type: ADD_BOOK_INTO_CARD_SAGA, MaSach: record.id ,countBook:countBook,MaFieuSach: MaFieuSach,SoLgMuonMax:SoLgMuonMax,});
+                            dispatch({ type: ADD_BOOK_INTO_CARD_SAGA, MaSach: record.id ,countBook:countBook,MaFieuSach: MaFieuSach,SoLgMuonMax:SoLgMuonMax,name:keyword});
                         }}
 
                         okText="Yes"
@@ -236,7 +237,7 @@ const handleChange = (pagination, filters, sorter) => {
           </Button>
           <form className="navbar-search-v1" style={{position:'absolute',right:'20px'}}>
     <input type="text" name="name" style={{border:'1px solid black'}} value={keyword}
-            onChange={handleInputChange} placeholder="Search book b name..." />
+            onChange={handleInputChange} placeholder="Search book book name..." />
    
 
   </form>

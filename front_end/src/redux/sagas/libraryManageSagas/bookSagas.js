@@ -15,7 +15,10 @@ function *getListBookSaga(action) {
             })
             yield delay (500);
         }
-
+        yield put({
+            type: 'KEY_SEARCH_BOOK',
+            keySearch:action.name
+        })
         const {data,status} = yield call( () => BookServices.getAllBook(action.name));
   
    
@@ -43,15 +46,17 @@ export function* followGetListBookSaga() {
 function *deleteBookSaga(action) { 
     try {
         const { data, status } = yield call(() => BookServices.deleteBook(action.id));
-     
-   
-     if(status === STATUS_CODE.SUCCESS) {
-
-
-            notifiFunction('success','Delete book successfully !')
-        }
-
-    yield call(getListBookSaga);
+        if(status=='401'){
+            notifiFunction('warning','You need to login !') ;
+              
+                    history.push('/login');
+           }
+        const b = yield call( () => BookServices.getAllBook(action.name));
+        yield put({
+            type:GET_ALL_BOOK,
+            bookList:b.data
+        })
+        notifiFunction('success','Delete book successfully !')
     }catch(err) {
         if(localStorage.getItem('id_user')===null){
             notifiFunction('warning','You need to login !') ;
@@ -79,18 +84,23 @@ function* updateBookSaga(action) {
 
 
         const { data, status } = yield call(() => BookServices.updateBook(action.idBook,action.bookUpdate));
-
-        if (status === STATUS_CODE.SUCCESS) {
-          console.log('data',data);
-
-            notifiFunction('success','Update book successfully !')
-        }
-    
+        if(status=='401'){
+            notifiFunction('warning','You need to login !') ;
+              
+                    history.push('/login');
+           }
+  
+        const b = yield call( () => BookServices.getAllBook(action.name));
+        yield put({
+            type:GET_ALL_BOOK,
+            bookList:b.data
+        })
+        notifiFunction('success','Update book successfully !')
    
         yield put({
             type:'CLOSE_DRAWER'
         })
-        yield call(getListBookSaga);
+ 
     } catch (err) {
         if(localStorage.getItem('id_user')===null){
             notifiFunction('warning','You need to login !') ;
@@ -125,14 +135,14 @@ function* createBookSaga(action) {
 
         
         const { data, status } = yield call(() => BookServices.createBook(action.bookCreate));
-      
+     
 
-        if (status === STATUS_CODE.SUCCESS) {
-            
-
+            const b = yield call( () => BookServices.getAllBook(action.name));
+            yield put({
+                type:GET_ALL_BOOK,
+                bookList:b.data
+            })
             notifiFunction('success','Add book successfully !')  ;  
-            }
-          
             
 
               
@@ -141,7 +151,6 @@ function* createBookSaga(action) {
         yield put({
             type:'CLOSE_DRAWER'
         })
-        yield call(getListBookSaga);
     } catch (err) {
         if(localStorage.getItem('id_user')===null){
             notifiFunction('warning','You need to login !') ;
@@ -174,9 +183,13 @@ export function* followCreateBookSaga() {
 function* createBookCardSaga(action) {
     try {
         const { data } = yield call(() => BookServices.createBookCard(action.bookCardCreate));
-        notifiFunction('success','Add book card successfully !, you can add book into card')
 
- 
+        const b = yield call( () => BookServices.getAllBook(action.name));
+        yield put({
+            type:GET_ALL_BOOK,
+            bookList:b.data
+        })
+        notifiFunction('success','Add book card successfully !, you can add book into card')
  
    
         yield put({
@@ -188,7 +201,6 @@ function* createBookCardSaga(action) {
             SoLgMuonMax:data.SoLgMuonMax
         })
         yield put({ type: UPDATE_BOOK_CARD ,countBook:0});
-        yield call(getListBookSaga);
     } catch (err) {
         if(localStorage.getItem('id_user')===null){
             notifiFunction('warning','You need to login !') ;
@@ -226,8 +238,7 @@ function* createBorrowBookSaga(action) {
             let countBook=action.countBook+1
             
             yield put({ type: UPDATE_BOOK_CARD ,countBook:countBook});
-            console.log('SoLgMuonMax',SoLgMuonMax);
-            console.log('countBook',countBook);
+        
 
             if(countBook<=SoLgMuonMax){
                 if(countBook>SoLgMuonMax){
@@ -245,17 +256,26 @@ function* createBorrowBookSaga(action) {
                     yield put({ type: UPDATE_BOOK_CARD ,countBook:0});
 
                 }
-                const {status} = yield call(() => BookServices.createBorowbook(borrowBook));
+                const {status,data} = yield call(() => BookServices.createBorowbook(borrowBook));
     
-                if (status === STATUS_CODE.SUCCESS) {
-        
-                    notifiFunction('success','Add book into card successfully !')
+                if (data == 'Không còn sách để mượn') {
+                    countBook=countBook-1;
+                    yield put({ type: UPDATE_BOOK_CARD ,countBook:countBook});
+
+                    notifiFunction('warning','No more books to borrow !')
+                     return;
                 }
-            
+                console.log('SoLgMuonMax',SoLgMuonMax);
+                console.log('countBook',countBook);
+                const b = yield call( () => BookServices.getAllBook(action.name));
+                yield put({
+                    type:GET_ALL_BOOK,
+                    bookList:b.data
+                })
+                notifiFunction('success','Add book into card successfully !')
                 return;
             }
         
-            yield call(getListBookSaga);
         } catch (err) {
             if(localStorage.getItem('id_user')===null){
                 notifiFunction('warning','You need to login !') ;

@@ -18,6 +18,11 @@ const FormEditStaff =(props)=> {
         //Load sự kiện submit lên drawer nút submit
         dispatch({ type: 'SET_SUBMIT', submitFunction: handleSubmit });
         dispatch({ type: GET_ALL_GENDER_SAGA })
+
+        
+        dispatch({ type: 'GET_LIST_PHONE_SAGA'})
+        dispatch({ type: 'GET_LIST_CCCD_SAGA' })
+        dispatch({ type: 'GET_LIST_EMAIL_SAGA'})
     }, [])
     const {
       values,
@@ -28,7 +33,18 @@ const FormEditStaff =(props)=> {
       handleSubmit,
       setFieldValue
   } = props;
+  const imgPreview = useSelector(state => state.imgReducers.imgPreview);
+
   const listGender=useSelector(state => state.genderReducers.genderList);
+  const phoneList = useSelector(state => state.validateReducers.phoneList);
+  const emailList = useSelector(state => state.validateReducers.emailList);
+  const cccdList = useSelector(state => state.validateReducers.cccdList);
+  const staffEdit = useSelector(state => state.staffReducers.staffEdit);
+
+    const ListEmailFilter=emailList.filter((item=>item.Email!==staffEdit.Email))
+    const ListCCCDFilter=cccdList.filter((item=>item.CCCD!==staffEdit.CCCD))
+    const ListPhoneFilter=phoneList.filter((item=>item.Phone!==staffEdit.Phone))
+
 
   const renderOptionGender=()=>{
     return listGender.map((gender,index)=>{
@@ -40,7 +56,7 @@ const FormEditStaff =(props)=> {
   return (
 
     <>
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} enctype="multipart/form-data" style={{position:'relative'}}>
   
   <div className="row">
     <div className="col-6"> 
@@ -64,6 +80,10 @@ const FormEditStaff =(props)=> {
   <div className="text-danger">{errors.Email}</div>
        ) : null}
         
+
+        {touched.Email && !errors.Email && ListEmailFilter.some((item,key)=>item.Email==values.Email)==true ? (
+  <div className="text-danger">Đã tồn tại email này trong hệ thống</div>
+       ) : null}
         </div>
 
   
@@ -88,6 +108,10 @@ const FormEditStaff =(props)=> {
         {touched.Phone && errors.Phone ? (
   <div className="text-danger">{errors.Phone}</div>
        ) : null}
+
+{touched.Phone && !errors.Phone && ListPhoneFilter.some((item,key)=>item.Phone==values.Phone)==true ? (
+  <div className="text-danger">Đã tồn tại sđt này trong hệ thống</div>
+       ) : null}
         
         </div>
 
@@ -101,6 +125,10 @@ const FormEditStaff =(props)=> {
   <div className="text-danger">{errors.CCCD}</div>
        ) : null}
         
+
+        {touched.CCCD && !errors.CCCD && ListCCCDFilter.some((item,key)=>item.CCCD==values.CCCD)==true ? (
+  <div className="text-danger">Đã tồn tại CCCD này trong hệ thống</div>
+       ) : null}
         </div>
     
 
@@ -144,11 +172,14 @@ const FormEditStaff =(props)=> {
        ) : null}
 
   </div>
-
   <div className="col-6"> 
     <label for="" className="form-label">Img avatar</label>
     
 <input className="form-control" name="avatar" type="file" onChange={(event) => {
+    dispatch({
+      type:'IMG_PREVIEW',
+      imgPreview:URL.createObjectURL(event.target.files[0])
+    })
   setFieldValue("avatar", event.currentTarget.files[0]);
 }} />
         {touched.avatar && errors.avatar ? (
@@ -159,8 +190,11 @@ const FormEditStaff =(props)=> {
         </div>
 
 
-  </div>
 
+  </div>
+  <div style={{width:'150px',height:'150px',position:'absolute',right:'169px',bottom:'-69px'}}>
+      <img src={imgPreview} style={{width:'100%',height:'100%',objectFit:'cover'}} alt="Select img"></img>
+      </div>
     </form>
 
 
@@ -185,13 +219,13 @@ const EditStaffWithFormik = withFormik({
 
   // Custom sync validation
   validationSchema: Yup.object().shape({
-    // Ten:Yup.string().required('This field  is required'),
-    // DiaChi:Yup.string().required('This field  is required'),
-    // Phone:Yup.string().required().matches(phoneRegex, 'Phone number is not valid ,length is 10'),
-    // Email:Yup.string().required().matches(EmailRegex, 'Email is not valid ,vd haiddhe141462@fpt.edu.vn'),
-    // CCCD:Yup.string().required().matches(CCCDRegex, 'CCCD is not valid ,It is number and length 12'),
-    // NgaySinh:Yup.string().required('This field  is required'),
-    // NgayHD:Yup.string().required('This field  is required'),
+    Ten:Yup.string().required('This field  is required'),
+    DiaChi:Yup.string().required('This field  is required'),
+    Phone:Yup.string().required().matches(phoneRegex, 'Phone number is not valid ,length is 10'),
+    Email:Yup.string().required().matches(EmailRegex, 'Email is not valid ,vd haiddhe141462@fpt.edu.vn'),
+    CCCD:Yup.string().required().matches(CCCDRegex, 'CCCD is not valid ,It is number and length 12'),
+    NgaySinh:Yup.string().required('This field  is required'),
+    NgayHD:Yup.string().required('This field  is required'),
     avatar:Yup.string().required('This field  is required'),
 
 
@@ -216,6 +250,7 @@ formData.append('MaGioiTinh',values.MaGioiTinh)
           Email:values.Email,
         },
         MaAcount:props.staffEdit.MaAcount,
+        name:props.keySearch
         
     })
 console.log('staffEdit',props.staffEdit);
@@ -227,6 +262,8 @@ console.log('staffEdit',props.staffEdit);
 const mapStateToProps = (state) => ({
 
 
-    staffEdit:state.staffReducers.staffEdit
+    staffEdit:state.staffReducers.staffEdit,
+    keySearch: state.staffReducers.keySearch
+
   })
 export default connect(mapStateToProps)(EditStaffWithFormik);

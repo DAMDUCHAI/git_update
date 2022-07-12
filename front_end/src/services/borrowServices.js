@@ -14,7 +14,11 @@ export class borrowServices extends baseServices {
     getAllBorrowByIdAcount = (id) => {
         return this.get(`/borrow/author-email/${id}`);
     }
-   
+    countBorrowBookByMonth = () => {
+        return this.get(`/borrow/count-borrow-book-by-month`);
+    }
+
+    
    
 }
 

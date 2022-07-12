@@ -16,11 +16,10 @@ const FormAddBook =(props)=> {
       //componentdidmount
       useEffect(() => {
 
-        dispatch({ type: GET_ALL_AUTHOR_SAGA })
-        dispatch({ type:GET_ALL_BOOKSHELF_SAGA})
-        dispatch({ type: GET_ALL_CATEGORY_SAGA })
-        dispatch({ type: GET_ALL_CATEGORY_SAGA })
-        dispatch({ type:   GET_ALL_PUBLISHER_SAGA })
+        dispatch({ type: GET_ALL_AUTHOR_SAGA ,name:''})
+        dispatch({ type:GET_ALL_BOOKSHELF_SAGA,name:''})
+        dispatch({ type: GET_ALL_CATEGORY_SAGA ,name:''})
+        dispatch({ type:   GET_ALL_PUBLISHER_SAGA,name:'' })
       
 
         
@@ -34,7 +33,7 @@ const FormAddBook =(props)=> {
       handleChange,
       handleBlur,
       handleSubmit,
-      setValues,
+      
       setFieldValue
   } = props;
     const authorList = useSelector(state => state.authorReducers.authorList);
@@ -108,7 +107,7 @@ const renderOptionAuthor=()=>{
         </div>
   </div>
   <div className="row">
-  <div className="col-4"> 
+  <div className="col-6"> 
     <label for="" className="form-label">Giá</label>
     <input type="text" className="form-control" name="Gia"  onChange={handleChange}
         onBlur={handleBlur}
@@ -120,7 +119,7 @@ const renderOptionAuthor=()=>{
        ) : null}
         
         </div>
-    <div className="col-4"> 
+    <div className="col-6"> 
     <label for="" className="form-label">Số lượng đầu sách</label>
     <input type="text" className="form-control" name="SoLgDauSach"  onChange={handleChange}
         onBlur={handleBlur}
@@ -132,18 +131,7 @@ const renderOptionAuthor=()=>{
         
         </div>
 
-  <div className="col-4"> 
-    <label for="" className="form-label">Số lượng hiện tại</label>
-    <input type="text" className="form-control" name="SoLgHienTai" onChange={handleChange}
-        onBlur={handleBlur}
-        value={values.SoLgHienTai} />
-        
-        
-        {touched.SoLgHienTai && errors.SoLgHienTai ? (
-  <div className="text-danger">{errors.SoLgHienTai}</div>
-       ) : null}
-        
-        </div>
+
    
   </div>
   <div className="row">
@@ -234,7 +222,7 @@ const CreateBookWithFormik = withFormik({
   enableReinitialize: true,
   mapPropsToValues: () => {    
    
-  return { Ten:"", NamXB: "",Gia: "",SoLgHienTai:"",SoLgDauSach:"",MaTacGia:"1",MaNXB:"1",MaKeSach:"1",MaTheLoai:"1",NoiDung:"",book_img:'' } },
+  return { Ten:"", NamXB: "",Gia: "",SoLgDauSach:"",MaTacGia:"1",MaNXB:"1",MaKeSach:"1",MaTheLoai:"1",NoiDung:"",book_img:'' } },
 
 
 
@@ -243,7 +231,6 @@ const CreateBookWithFormik = withFormik({
     Ten:Yup.string().required('This field  is required'),
     NamXB:Yup.string().required().matches(yearRegex, 'NamXB is not valid ,length is 10'),
     Gia:Yup.number().required(),
-    SoLgHienTai:Yup.string().required().matches(numberRegex, 'This field  is natural number, start 1'),
     SoLgDauSach:Yup.string().required().matches(numberRegex, 'This field  is natural number, start 1'),
     NoiDung:Yup.string().required('This field  is required'),
     book_img:Yup.string().required('This field  is required'),
@@ -257,7 +244,6 @@ const CreateBookWithFormik = withFormik({
 formData.append('Ten',values.Ten)
 formData.append('NamXB',values.NamXB)
 formData.append('Gia',values.Gia)
-formData.append('SoLgHienTai',values.SoLgHienTai)
 formData.append('SoLgDauSach',values.SoLgDauSach)
 formData.append('NoiDung',values.NoiDung)
 formData.append('book_img',values.book_img)
@@ -271,11 +257,16 @@ formData.append('MaNXB',values.MaNXB)
     props.dispatch({
       type:CREATE_BOOK_SAGA,
       bookCreate:formData,
+      name:props.keySearch
   })
 console.log("valuse", values);
   },
 
   displayName: "EditBookForm",
 })(FormAddBook);
+const mapStateToProps = (state) => ({
 
-export default connect()(CreateBookWithFormik);
+  keySearch: state.bookReducers.keySearch
+
+})
+export default connect(mapStateToProps)(CreateBookWithFormik);
